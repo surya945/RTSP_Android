@@ -8,18 +8,21 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        textView = findViewById(R.id.textView);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
@@ -39,7 +42,16 @@ public class MainActivity extends AppCompatActivity
             y = sensorEvent.values[1];
             z = sensorEvent.values[2];
 
-            Log.v("Accelerometer", String.format("x=%f y=%f z=%f", x, y, z));
+            final String textData = String.format("x=%f y=%f z=%f", x, y, z);
+
+            Log.v("Accelerometer", textData);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    textView.setText(textData);
+                }
+            });
         }
     }
 
